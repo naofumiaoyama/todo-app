@@ -13,34 +13,36 @@ const todoSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: (state, action: PayloadAction<string>) => {
+    addTodo: (state, action: PayloadAction<{ title: string; description: string; }>) => {
       const newTodo: Todo = {
         id: Date.now(),
-        title: action.payload,
-        description: '',
+        title: action.payload.title,
+        description: action.payload.description,
         completed: false,
       };
       state.todos.push(newTodo);
-      console.log(`Added new todo: ${newTodo.title}`);
-    },
+    },    
     toggleTodo: (state, action: PayloadAction<number>) => {
       const todo = state.todos.find((todo) => todo.id === action.payload);
       if (todo) {
         todo.completed = !todo.completed;
-        console.log(`Todo ${todo.id} completed state: ${todo.completed}`);
       }
     },
     removeTodo: (state, action: PayloadAction<number>) => {
       state.todos = state.todos.filter((todo) => todo.id !== action.payload);
-      console.log(`Todo ${action.payload} removed`);
     },
-    // 追加: 並べ替えたtodosリスト全体を更新するアクション
+    // 新しいアクションを追加：Todoを更新
+    updateTodo: (state, action: PayloadAction<Todo>) => {
+      const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
+      if (index !== -1) {
+        state.todos[index] = action.payload;
+      }
+    },
     updateTodos: (state, action: PayloadAction<Todo[]>) => {
       state.todos = action.payload;
-      console.log(`Todos updated`);
     },
   },
 });
 
-export const { addTodo, toggleTodo, removeTodo, updateTodos } = todoSlice.actions;
+export const { addTodo, toggleTodo, removeTodo, updateTodo, updateTodos } = todoSlice.actions;
 export default todoSlice.reducer;

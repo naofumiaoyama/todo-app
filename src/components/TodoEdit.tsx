@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { updateTodo } from '../features/todos/todoSlice';
+import { useDispatch } from 'react-redux';
 
 interface Todo {
   id: number;
@@ -17,52 +19,44 @@ interface TodoEditProps {
 const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose, onSave }) => {
   const [title, setTitle] = useState(todo?.title || '');
   const [description, setDescription] = useState(todo?.description || '');
+  const dispatch = useDispatch();
 
-  // モーダルが開かれたときに初期値をセット
-  React.useEffect(() => {
-    if (todo) {
-      setTitle(todo.title);
-      setDescription(todo.description);
+  useEffect(() => {
+    if (isOpen) {
+      setTitle(todo?.title || ''); // 新規の場合は空のタイトル
+      setDescription(todo?.description || ''); // 新規の場合は空の説明
     }
-  }, [todo]);
+  }, [isOpen, todo]);
 
-  if (!isOpen || !todo) return null;
+  if (!isOpen) return null;
 
   const handleSave = () => {
-    if (todo) {
-      onSave({ ...todo, title, description });
+    if (title.trim() && description.trim()) {
+      const updatedTodo = todo ? { ...todo, title, description } : { id: Date.now(), title, description, completed: false };
+      dispatch(updateTodo(updatedTodo)); // 新しいタスクまたは編集されたタスクを保存
+      onClose();
     }
-    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
-        <h3 className="text-2xl font-bold mb-4">タスク編集</h3>
-        <div className="mb-4">
-          <label className="block mb-2">タイトル</label>
-          <input
-            className="border border-gray-300 rounded px-3 py-2 w-full"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">説明</label>
-          <textarea
-            className="border border-gray-300 rounded px-3 py-2 w-full"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="flex justify-end space-x-2">
-          <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={onClose}>
-            キャンセル
-          </button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded" onClick={handleSave}>
-            保存
-          </button>
-        </div>
+        <h3 className="text-xl mb-4">Add/Edit Task</h3>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title"
+          className="w-full mb-4 px-2 py-1 border"
+        />
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Description"
+          className="w-full mb-4 px-2 py-1 border"
+        />
+        <button onClick={handleSave} className="bg-blue-600 text-white py-2 px-4 rounded">Save</button>
+        <button onClick={onClose} className="ml-2 py-2 px-4 rounded">Cancel</button>
       </div>
     </div>
   );

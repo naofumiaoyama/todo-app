@@ -4,7 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { RootState } from '../app/store';
 import TodoItem from './TodoItem';
-import { updateTodos } from '../features/todos/todoSlice'; // 新しいアクションをインポート
+import { updateTodos } from '../features/todos/todoSlice';
 
 const TodoList: React.FC = () => {
   const dispatch = useDispatch();
@@ -20,25 +20,16 @@ const TodoList: React.FC = () => {
     const [movedTodo] = updatedTodos.splice(dragIndex, 1);
     updatedTodos.splice(hoverIndex, 0, movedTodo);
     setSortedTodos(updatedTodos);
-
-    // 並び替えが終わった後に、新しい順序をReduxに保存
     dispatch(updateTodos(updatedTodos));
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div>
-        <div>
-          {sortedTodos.map((todo, index) => (
-            <TodoItem
-              key={todo.id}
-              index={index}
-              todo={todo}
-              moveTodo={moveTodo}
-            />
-          ))}
-        </div>
-      </div>
+      <ul>
+        {sortedTodos.map((todo, index) => (
+          <TodoItem key={todo.id} todo={todo} index={index} moveTodo={moveTodo} />
+        ))}
+      </ul>
     </DndProvider>
   );
 };
