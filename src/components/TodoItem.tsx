@@ -24,11 +24,6 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, index, moveTodo }) => {
     setIsEditModalOpen(false);
   };
 
-  const saveTodo = (updatedTodo: Todo) => {
-    console.log('Updated Todo:', updatedTodo);
-    closeEditModal();
-  };
-
   const [{ isDragging }, drag] = useDrag({
     type: 'TODO',
     item: { index },
@@ -62,13 +57,21 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, index, moveTodo }) => {
           checked={todo.completed}
           onChange={() => dispatch(toggleTodo(todo.id))}
         />
+        <div className='flex flex-col'>
         <label
-          className="text-2xl px-2 py-2 w-48 truncate cursor-pointer"
+          className="text-2xl px-2 py-1 w-48 truncate cursor-pointer"
           style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
           onClick={openEditModal}
         >
           {todo.title}
         </label>
+        
+        <label
+          className="text-1xl px-2 py-1 w-48"
+        >
+          {todo.description}
+        </label>
+        </div>
       </div>
       <button
         className="bg-blue-800 text-white px-3 py-1 rounded"
@@ -82,7 +85,6 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, index, moveTodo }) => {
           todo={todo}
           isOpen={isEditModalOpen}
           onClose={closeEditModal}
-          onSave={saveTodo}
         />
       )}
     </div>
