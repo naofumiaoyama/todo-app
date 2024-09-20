@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { updateTodo } from '../features/todos/todoSlice';
 import { useDispatch } from 'react-redux';
+import { addTodo, updateTodo } from '../features/todos/todoSlice'; // Redux actions
 
 interface Todo {
   id: number;
@@ -13,18 +13,17 @@ interface TodoEditProps {
   todo: Todo | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedTodo: Todo) => void;
 }
 
-const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose, onSave }) => {
+const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose }) => {
   const [title, setTitle] = useState(todo?.title || '');
   const [description, setDescription] = useState(todo?.description || '');
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (isOpen) {
-      setTitle(todo?.title || ''); // 新規の場合は空のタイトル
-      setDescription(todo?.description || ''); // 新規の場合は空の説明
+      setTitle(todo?.title || '');
+      setDescription(todo?.description || '');
     }
   }, [isOpen, todo]);
 
@@ -32,9 +31,16 @@ const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose, onSave }) =>
 
   const handleSave = () => {
     if (title.trim() && description.trim()) {
-      const updatedTodo = todo ? { ...todo, title, description } : { id: Date.now(), title, description, completed: false };
-      dispatch(updateTodo(updatedTodo)); // 新しいタスクまたは編集されたタスクを保存
-      onClose();
+      if (todo) {
+        // 既存のタスクを更新
+        const updatedTodo = { ...todo, title, description };
+        dispatch(updateTodo(updatedTodo));
+      } else {
+        // 新規タスクを追加
+        const newTodo = { id: Date.now(), title, description, completed: false };
+        dispatch(addTodo(newTodo));
+      }
+      onClose(); // フォームを閉じる
     }
   };
 
