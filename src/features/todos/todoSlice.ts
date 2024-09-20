@@ -31,7 +31,6 @@ const todoSlice = createSlice({
     removeTodo: (state, action: PayloadAction<number>) => {
       state.todos = state.todos.filter((todo) => todo.id !== action.payload);
     },
-    // 新しいアクションを追加：Todoを更新
     updateTodo: (state, action: PayloadAction<Todo>) => {
       const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
       if (index !== -1) {
