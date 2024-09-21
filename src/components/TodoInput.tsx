@@ -9,14 +9,10 @@ const TodoInput: React.FC = () => {
     setEditOpen(true);
   };
 
-  const handleSave = () => {
-    setEditOpen(false); // フォームを閉じる
-  };
-
   return (
     <>
-      <button onClick={handleAddClick} className="bg-blue-600 text-white py-2 px-4 rounded text-sm">追加</button>
-      {isEditOpen && <TodoEdit todo={null} isOpen={isEditOpen} onClose={() => setEditOpen(false)} onSave={handleSave} />}
+      <button onClick={handleAddClick} className="bg-blue-600 text-white py-2 px-4 rounded text-sm">タスク追加</button>
+      {isEditOpen && <TodoEdit addMode={true} todo={null} isOpen={isEditOpen} onClose={() => setEditOpen(false)} />}
     </>
   );
 };

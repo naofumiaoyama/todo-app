@@ -60,9 +60,9 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, index, moveTodo }) => {
         />
       
         {/* タイトルと説明を縦に並べる */}
-        <div className="flex flex-col ml-2"> {/* ml-2でチェックボックスとタイトルの間に少しスペースを追加 */}
+        <div className="flex flex-col ml-2"> 
           <label
-            className="text-2xl w-48 truncate cursor-pointer"
+            className="text-2xl w-72 truncate cursor-pointer"
             style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
             onClick={openEditModal}
           >
@@ -70,9 +70,9 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, index, moveTodo }) => {
           </label>
           
           <label
-            className="text-1xl w-48 text-gray-600"  // テキストサイズを小さくし、色をグレーに
+            className="text-1xl w-72 min-h-[20px] text-gray-600" 
           >
-            {todo.description}
+            {todo.description || ''}
           </label>
         </div>
       </div>
@@ -86,6 +86,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, index, moveTodo }) => {
 
       {isEditModalOpen && (
         <TodoEdit
+          addMode = {false}
           todo={todo}
           isOpen={isEditModalOpen}
           onClose={closeEditModal}

@@ -10,12 +10,13 @@ interface Todo {
 }
 
 interface TodoEditProps {
+  addMode: boolean
   todo: Todo | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose }) => {
+const TodoEdit: React.FC<TodoEditProps> = ({ addMode, todo, isOpen, onClose }) => {
   const [title, setTitle] = useState(todo?.title || '');
   const [description, setDescription] = useState(todo?.description || '');
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const handleSave = () => {
-    if (title.trim() && description.trim()) {
+    if (title.trim()) {
       if (todo) {
         // 既存のタスクを更新
         const updatedTodo = { ...todo, title, description };
@@ -42,12 +43,13 @@ const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose }) => {
       }
       onClose(); // フォームを閉じる
     }
+    
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
-        <h3 className="text-xl mb-4">Add/Edit Task</h3>
+        <h3 className="text-xl mb-4">追加/更新</h3>
         <input
           type="text"
           value={title}
@@ -61,7 +63,7 @@ const TodoEdit: React.FC<TodoEditProps> = ({ todo, isOpen, onClose }) => {
           placeholder="Description"
           className="w-full mb-4 px-2 py-1 border"
         />
-        <button onClick={handleSave} className="bg-blue-600 text-white py-2 px-4 rounded">Save</button>
+        <button onClick={handleSave} className="bg-blue-600 text-white py-2 px-4 rounded">{addMode? "追加" : "保存"}</button>
         <button onClick={onClose} className="ml-2 py-2 px-4 rounded">Cancel</button>
       </div>
     </div>
