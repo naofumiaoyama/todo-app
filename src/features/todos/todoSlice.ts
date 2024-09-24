@@ -13,12 +13,24 @@ const todoSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: (state, action: PayloadAction<{ title: string; description: string; }>) => {
+    addTodo: (state, action: PayloadAction<{ 
+      title: string; 
+      description: string; 
+      dueDate?:string;
+      priority?: 'low' | 'medium' | 'high';
+      category?: string;
+    }>) => {
       const newTodo: Todo = {
         id: Date.now(),
         title: action.payload.title,
         description: action.payload.description,
         completed: false,
+        dueDate: action.payload.dueDate || null,
+        priority: action.payload.priority || 'medium',
+        status: 'pending',
+        creationDate: new Date(),
+        completionDate: null,
+        category: action.payload.category || 'general',
       };
       state.todos.push(newTodo);
     },    

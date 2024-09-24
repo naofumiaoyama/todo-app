@@ -47,46 +47,57 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, index, moveTodo }) => {
   return (
     <div
       ref={ref}
-      className="flex items-center justify-between"
+      className="bg-white shadow-md rounded-lg p-4 mb-4 w-96"  // w-96 で横幅を固定
       style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      <div className="flex items-start">
-        {/* チェックボックス */}
-        <input
-          className="w-8 h-8"
-          type="checkbox"
-          checked={todo.completed}
-          onChange={() => dispatch(toggleTodo(todo.id))}
-        />
-      
-        {/* タイトルと説明を縦に並べる */}
-        <div className="flex flex-col ml-2"> 
-          <label
-            className="text-2xl w-72 truncate cursor-pointer"
-            style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
-            onClick={openEditModal}
-          >
-            {todo.title}
-          </label>
-          
-          <label
-            className="text-1xl w-72 min-h-[20px] text-gray-600" 
-          >
-            {todo.description || ''}
-          </label>
+      <div className="flex items-center justify-between">
+        {/* チェックボックスとタイトル・説明 */}
+        <div className="flex items-start">
+          {/* チェックボックス */}
+          <input
+            className="w-8 h-8 mr-4"
+            type="checkbox"
+            checked={todo.completed}
+            onChange={() => dispatch(toggleTodo(todo.id))}
+          />
+        
+          {/* タイトルと説明を縦に並べる */}
+          <div className="flex flex-col">
+            <label
+              className="text-2xl truncate cursor-pointer"
+              style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
+              onClick={openEditModal}
+            >
+              {todo.title}
+            </label>
+            <label className="text-gray-600">
+              {todo.description || '説明なし'}
+            </label>
+          </div>
         </div>
-      </div>
-      <button
-        className="bg-blue-800 text-white px-3 py-1 rounded"
-        style={{ transform: 'translateY(-10px)' }}  
-        onClick={() => dispatch(removeTodo(todo.id))}
-      >
-        削除
-      </button>
 
+        {/* 削除ボタン */}
+        <button
+          className="bg-blue-800 text-white px-3 py-1 rounded"
+          onClick={() => dispatch(removeTodo(todo.id))}
+        >
+          削除
+        </button>
+      </div>
+
+      {/* 追加項目の表示 */}
+      <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
+        <p><strong>期限:</strong> {todo.dueDate || '未設定'}</p>
+        <p><strong>優先度:</strong> {todo.priority}</p>
+        <p><strong>ステータス:</strong> {todo.status}</p>
+        <p><strong>作成日:</strong> {todo.creationDate.toLocaleDateString()}</p>
+        <p><strong>カテゴリ:</strong> {todo.category}</p>
+      </div>
+
+      {/* 編集モーダル */}
       {isEditModalOpen && (
         <TodoEdit
-          addMode = {false}
+          addMode={false}
           todo={todo}
           isOpen={isEditModalOpen}
           onClose={closeEditModal}
