@@ -1,30 +1,45 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import todos, users
+from .routers import todos
 from .database import engine
 from . import models
+import logging
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Todo API", description="Backend API for Todo App")
 
-# CORS設定（より詳細に設定）
-app.add_middleware(
-    CORSMiddleware,
-    # 全てのオリジンを許可（開発環境向け）
-    allow_origins=["*"],
-    allow_credentials=False,  # credentialsを送信しない場合はFalseにする
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"],
-    allow_headers=["Authorization", "Content-Type", "Accept"],
-    expose_headers=["Authorization"],
-)
+# Remove CORS設定
+# origins = [
+#     "http://localhost",  # Add your frontend URL here
+#     "http://localhost:5173",  # Add your frontend URL here
+# ]
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # ルーターの登録
 app.include_router(todos.router, prefix="/api/todos", tags=["todos"])
-app.include_router(users.router, prefix="/api/users", tags=["users"])
-
 
 @app.get("/", tags=["health"])
 async def root():
+    logger.info("Health check endpoint called")
     return {"message": "Todo API is running"}
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Starting up the Todo API")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    logger.info("Shutting down the Todo API")

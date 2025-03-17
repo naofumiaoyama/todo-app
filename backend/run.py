@@ -20,7 +20,7 @@ def main():
     try:
         print("FastAPI サーバーを起動しています...")
         # Windows HostとWSL間の通信を容易にするために特定のIPを使用
-        uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+        uvicorn.run("app.main:app", host="localhost", port=8000, reload=True)
     except Exception as e:
         print(f"サーバー起動エラー: {e}")
         sys.exit(1)

@@ -22,7 +22,7 @@ def main():
         # Windows Hostからアクセスできるよう設定
         uvicorn.run(
             "app.main:app", 
-            host="0.0.0.0",  # すべてのインターフェースでリッスン
+            host="localhost",  # すべてのインターフェースでリッスン
             port=8000, 
             reload=False  # 安定性のためreloadはオフに
         )
